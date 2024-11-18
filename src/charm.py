@@ -28,7 +28,7 @@ class JoplinServerCharm(ops.CharmBase):
         super().__init__(framework)
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
 
-    def on_pebble_ready(self, event: ops.PebbleReadyEvent):
+    def configure(self, event: ops.PebbleReadyEvent):
         self.unit.status = ops.ActiveStatus()
 
 
