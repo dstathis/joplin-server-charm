@@ -1,0 +1,43 @@
+# Joplin Server Charmed Operator
+# Copyright (C) 2024 Dylan Stephano-Shachter
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+name: joplin-server
+type: charm
+title: Joplin Server
+summary: Charmed operator for Joplin Server.
+description: |
+  Joplin is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are searchable, can be copied, tagged and modified either from the applications directly or from your own text editor. The notes are in Markdown format.
+  This charm runs Joplin Server which allows instances of Joplin to sync notes.
+
+bases:
+  - build-on:
+    - name: ubuntu
+      channel: "22.04"
+      architectures: ["amd64"]
+    run-on:
+    - name: ubuntu
+      channel: "22.04"
+      architectures: ["amd64"]
+
+containers:
+  joplin-server:
+    resource: joplin-server-image
+
+resources:
+  joplin-server-image:
+    type: oci-image
+    description: OCI image for the 'joplin-server' container
+    upstream-source: joplin/server:latest
