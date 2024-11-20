@@ -29,7 +29,27 @@ class JoplinServerCharm(ops.CharmBase):
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
 
     def configure(self, event: ops.PebbleReadyEvent):
+        container = self.unit.get_container('joplin-server')
+        if not container.can_connect():
+            return
+
         self.unit.status = ops.ActiveStatus()
+
+    def joplin_server_layer(self):
+        return {
+            'summary': 'Joplin Server Layer',
+            'description': 'Pebble layer for Joplin Server',
+            'services': {
+                'joplin-server': {
+                    'override': 'replace',
+                    'command': self.command(),
+                    'startup': 'enabled',
+                }
+            }
+        }
+
+    def command(self):
+        'tini -- yarn start-prod'
 
 
 if __name__ == '__main__':
