@@ -22,15 +22,9 @@ description: |
   Joplin is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are searchable, can be copied, tagged and modified either from the applications directly or from your own text editor. The notes are in Markdown format.
   This charm runs Joplin Server which allows instances of Joplin to sync notes.
 
-bases:
-  - build-on:
-    - name: ubuntu
-      channel: "22.04"
-      architectures: ["amd64"]
-    run-on:
-    - name: ubuntu
-      channel: "22.04"
-      architectures: ["amd64"]
+base: ubuntu@24.04
+platforms:
+  amd64:
 
 containers:
   joplin-server:
