@@ -18,6 +18,7 @@
 import logging
 
 import ops
+from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer, IngressReadyEvent
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +27,17 @@ class JoplinServerCharm(ops.CharmBase):
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
+        self.ingress = IngressPerAppRequirer(self, host="foo.bar", port=80)
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
 
     def configure(self, event: ops.PebbleReadyEvent):
         container = self.unit.get_container('joplin-server')
         if not container.can_connect():
             return
+
+        container.add_layer("joplin-server", self.joplin_server_layer(), combine=True)
+        container.autostart()
+        self.unit.set_ports(22300)
 
         self.unit.status = ops.ActiveStatus()
 
@@ -49,7 +55,7 @@ class JoplinServerCharm(ops.CharmBase):
         }
 
     def command(self):
-        'tini -- yarn start-prod'
+        return 'tini -- yarn start-prod'
 
 
 if __name__ == '__main__':
