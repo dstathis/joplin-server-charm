@@ -26,6 +26,10 @@ base: ubuntu@24.04
 platforms:
   amd64:
 
+parts:
+  charm:
+    plugin: charm
+
 containers:
   joplin-server:
     resource: joplin-server-image
