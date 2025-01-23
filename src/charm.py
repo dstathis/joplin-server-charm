@@ -28,7 +28,7 @@ class JoplinServerCharm(ops.CharmBase):
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
-        self.ingress = IngressPerAppRequirer(self, port=22300)
+        self.ingress = IngressPerAppRequirer(self, port=22300, strip_prefix=True)
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
         framework.observe(self.on['ingress'].relation_changed, self.configure)
 
