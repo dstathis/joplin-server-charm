@@ -28,6 +28,9 @@ platforms:
 
 parts:
   charm:
+    build-packages:
+      - rustc
+      - cargo
     plugin: charm
 
 containers:
@@ -39,3 +42,8 @@ resources:
     type: oci-image
     description: OCI image for the 'joplin-server' container
     upstream-source: joplin/server:latest
+
+requires:
+  ingress:
+    interface: ingress
+    limit: 1

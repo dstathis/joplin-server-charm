@@ -16,9 +16,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 import logging
+import socket
 
 import ops
-from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer, IngressReadyEvent
+from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
 logger = logging.getLogger(__name__)
 
@@ -27,16 +28,20 @@ class JoplinServerCharm(ops.CharmBase):
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
-        self.ingress = IngressPerAppRequirer(self, host="foo.bar", port=80)
+        self.ingress = IngressPerAppRequirer(self, port=22300)
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
+        framework.observe(self.on['ingress'].relation_changed, self.configure)
 
     def configure(self, event: ops.PebbleReadyEvent):
+        self.unit.open_port(protocol='tcp', port=22300)
+
         container = self.unit.get_container('joplin-server')
         if not container.can_connect():
             return
 
         container.add_layer("joplin-server", self.joplin_server_layer(), combine=True)
         container.autostart()
+        container.replan()
         self.unit.set_ports(22300)
 
         self.unit.status = ops.ActiveStatus()
@@ -50,6 +55,10 @@ class JoplinServerCharm(ops.CharmBase):
                     'override': 'replace',
                     'command': self.command(),
                     'startup': 'enabled',
+                    'environment': {
+                        'APP_BASE_URL': self.ingress.url or socket.getfqdn(),
+                        'APP_PORT': '22300',
+                    },
                 }
             }
         }
