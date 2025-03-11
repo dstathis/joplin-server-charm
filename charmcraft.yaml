@@ -29,9 +29,16 @@ platforms:
 parts:
   charm:
     build-packages:
+      - libpq-dev
       - rustc
       - cargo
     plugin: charm
+
+config:
+  options:
+    external-url:
+      type: string
+      description: "Override the url you use to access joplin-server. Used to set the base url for the server. Should include the scheme. Eg: \"http://example.com\""
 
 containers:
   joplin-server:
@@ -46,4 +53,7 @@ resources:
 requires:
   ingress:
     interface: ingress
+    limit: 1
+  database:
+    interface: postgresql_client
     limit: 1

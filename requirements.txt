@@ -1,1 +1,4 @@
 ops ~= 2.17
+
+# charms.postresql_k8s.v0.postgresql
+psycopg2
