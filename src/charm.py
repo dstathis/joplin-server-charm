@@ -20,6 +20,7 @@ import socket
 
 import ops
 from charms.data_platform_libs.v0.data_interfaces import DatabaseRequires
+from charms.loki_k8s.v1.loki_push_api import LogForwarder
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
 logger = logging.getLogger(__name__)
@@ -40,10 +41,13 @@ class JoplinServerCharm(ops.CharmBase):
 
     def __init__(self, framework: ops.Framework):
         super().__init__(framework)
+
+        self.log_forwarder = LogForwarder(self)
         self.ingress = IngressPerAppRequirer(self, port=22300, strip_prefix=True)
+        self.database = DatabaseRequires(self, relation_name='database', database_name=DB_NAME)
+
         framework.observe(self.on['joplin-server'].pebble_ready, self.configure)
         framework.observe(self.on['ingress'].relation_changed, self.configure)
-        self.database = DatabaseRequires(self, relation_name='database', database_name=DB_NAME)
         framework.observe(self.database.on.database_created, self.configure)
         framework.observe(self.database.on.endpoints_changed, self.configure)
 

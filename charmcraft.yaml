@@ -57,3 +57,5 @@ requires:
   database:
     interface: postgresql_client
     limit: 1
+  logging:
+    interface: loki_push_api

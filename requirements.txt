@@ -2,3 +2,6 @@ ops ~= 2.17
 
 # charms.postresql_k8s.v0.postgresql
 psycopg2
+
+# charms.loki_k8s.v1.loki_push_api
+cosl
