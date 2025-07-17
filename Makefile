@@ -16,7 +16,7 @@
 
 CHARMCRAFT=charmcraft
 
-charm: joplin-server_ubuntu-22.04-amd64.charm
+charm: joplin-server_amd64.charm
 
 format:
 	ruff check --fix src
@@ -25,5 +25,5 @@ check:
 	ruff check src
 	codespell src
 
-joplin-server_ubuntu-22.04-amd64.charm: src/charm.py charmcraft.yaml requirements.txt
+joplin-server_amd64.charm: src/charm.py charmcraft.yaml requirements.txt
 	$(CHARMCRAFT) pack
